@@ -78,7 +78,7 @@ exports.loginToSystem = async (req, res) => {
             refreshToken: refreshToken
         });
     } catch (error) {
-        returnres.status(500).json({
+        return res.status(500).json({
             timestamp: new Date().toISOString(),
             path: "/auth/login",
             code: errorCode.ERR_LOGIN_FAILED,
