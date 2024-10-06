@@ -7,7 +7,7 @@ async function sendResetPasswordEmail(nameHostEmail, receivedEmail, resetLink) {
     const hostMail = process.env.HOST_MAIL;
     const passHostMail = process.env.EMAIL_PASS;
     let transporter = nodemailer.createTransport({
-        service: 'Gmail', // Gmail, Yahoo,...
+        service: 'Gmail', // using Gmail, Yahoo,...
         auth: {
             user: hostMail,
             pass: passHostMail,
@@ -20,7 +20,7 @@ async function sendResetPasswordEmail(nameHostEmail, receivedEmail, resetLink) {
         to: receivedEmail,
         subject: 'Reset Password From Facetok',
         html: `
-            Hi ${receivedEmail},
+            Hi there ${receivedEmail},
             <br><br>
             There was a request to change your password!
             <br><br>

@@ -21,11 +21,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./swagger/swagger'); // Đường dẫn tới file swagger.js
+
 //END SETUP ENGINE----------------------------------------------------------------
 
 //CONNECT TO DB
 const connect = new DBConnection();
 connect.connect();
+
+// Tạo endpoint cho Swagger UI
+app.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 //Excute main routes
 app.use('/', indexRouter);
