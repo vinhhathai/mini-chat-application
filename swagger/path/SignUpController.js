@@ -38,7 +38,7 @@
  *                 type: string
  *                 description: Ngày sinh của người dùng
  *                 format: date
- *                 example: "1990-01-01"
+ *                 example: "01-01-1990"
  *     responses:
  *       201:
  *         description: Đăng ký thành công
