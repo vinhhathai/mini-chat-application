@@ -22,8 +22,8 @@ exports.signUp = async (req, res) => {
             })
         }
 
-        // Check email and username in database
-        const { email, username } = req.body;
+        // Check email in database
+        const { email } = req.body;
         const emailExist = await UserModel.findOne({ email });
         if (emailExist) {
             return res.status(409).json({
@@ -37,29 +37,14 @@ exports.signUp = async (req, res) => {
             });
         }
 
-        const usernameExist = await UserModel.findOne({ username });
-        if (usernameExist) {
-            return res.status(409).json({
-                timestamp: new Date().toISOString(),
-                path: "/auth/sign-up",
-                code: errorCode.DATA_CONFLICT,
-                error: {
-                    name: errorMessage.USERNAME_EXISTED,
-                }
-            });
-        }
 
         // Hash password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
         // Insert account into database
-        const { birthday } = req.body;
         const newUser = await UserModel.create({
             ...req.body,
-            birthday: moment(birthday, "DD/MM/YYYY").format(
-                "YYYY-MM-DD"
-            ),
             password: hashedPassword,
         })
 

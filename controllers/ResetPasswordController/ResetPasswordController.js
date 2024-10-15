@@ -25,15 +25,17 @@ exports.resetPassword = async (req, res, next) => {
         const { email } = req.body;
         const user = await UserModel.findOne({ email: email });
         if (user) {
+
             const otpGen = generateOtp();
             console.log("Generated OTP:", otpGen);
             const generateOtpResult = await UserModel.updateOne(
                 { email: email },
                 { resetOtp: otpGen }
             );
-
             try {
-                sendResetPasswordEmail('Facetok', email, otpGen)
+
+                sendResetPasswordEmail('Mini-Chat-G3', email, otpGen)
+
                 return res.status(201).json({
                     status: true,
                     message: `Reset password link has been sent to ${email}`

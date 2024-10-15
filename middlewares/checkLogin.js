@@ -4,7 +4,6 @@ require('dotenv').config()
 const UserModel = require('../models/UserModel')
 const jwt = require('jsonwebtoken');
 const { errorCode, errorMessage } = require('../common/enum/error');
-const { role } = require('../common/enum/role')
 
 const checkLogin = async (req, res, next) => {
     try {
@@ -35,21 +34,6 @@ const checkLogin = async (req, res, next) => {
             });
         }
 
-        // check role
-        const user = await UserModel.findById(token._id)
-
-        if (user.role !== role.MEMBER) {
-
-            return res.status(403).json({
-                timestamp: new Date().toISOString(),
-                path: req.originalUrl,
-                code: errorCode.NOT_PERMISSIONS,
-                error: {
-                    name: errorMessage.NOT_PERMISSIONS
-                }
-            });
-
-        }
         // Add user_id to req.user
         req.user = {
             user_id: token._id
