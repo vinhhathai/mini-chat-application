@@ -4,9 +4,9 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const UserSchema = new Schema({
-    username: { type: String, required: true, unique: true},
+    username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    email: { type: String, required: true, unique: true},
+    email: { type: String, required: true, unique: true },
     role: { type: String, enum: ['0', '1'], default: "1" },
     isActive: { type: Boolean, default: true },
     fullName: { type: String },
@@ -15,7 +15,8 @@ const UserSchema = new Schema({
     groups: [{ type: mongoose.Types.ObjectId, ref: 'groups' }],
     gender: { type: String, enum: ['male', 'female', 'undefined'], default: "undefined" },
     birthday: { type: Date },
-    bio: { type: String }
+    bio: { type: String },
+    resetOtp: { type: Number },
 }, {
     timestamps: true,
     collection: 'users'
