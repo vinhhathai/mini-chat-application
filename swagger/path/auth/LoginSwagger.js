@@ -12,13 +12,13 @@
  *           schema:
  *             type: object
  *             required:
- *               - username
+ *               - email
  *               - password
  *             properties:
- *               username:
+ *               email:
  *                 type: string
  *                 description: Tên đăng nhập của người dùng
- *                 example: johndoe
+ *                 example: johndoe@example.com
  *               password:
  *                 type: string
  *                 description: Mật khẩu của người dùng
@@ -40,7 +40,7 @@
  *                   description: JWT token để làm mới accessToken
  *                   example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
  *       400:
- *         description: Yêu cầu không hợp lệ (thiếu username hoặc password)
+ *         description: Yêu cầu không hợp lệ (thiếu email hoặc password)
  *       401:
  *         description: Thông tin đăng nhập không chính xác
  */

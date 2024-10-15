@@ -13,6 +13,15 @@ const options = {
         url: 'http://localhost:3000', // URL của server API
       },
     ],
+    components: {
+      securitySchemes: {
+        BearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
   },
   // Định nghĩa các route mà Swagger sẽ quét để tìm thông tin tài liệu
   apis: ['./swagger/**/*.js'],
