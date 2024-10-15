@@ -30,7 +30,7 @@ exports.resetPassword = async (req, res, next) => {
         const user = await UserModel.findOne({ email: email });
         // Create token
         if (user) {
-            const resetPasswordToken = jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: '2m' }) // 2 minutes
+            const resetPasswordToken = jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: '10m' }) // 2 minutes
             // Setup link for reset password
             const host = "localhost:3000"
             const protocol = req.protocol
@@ -38,7 +38,7 @@ exports.resetPassword = async (req, res, next) => {
 
             // Send email
             try {
-                sendResetPasswordEmail('Facetok', email, resetLink)
+                sendResetPasswordEmail('Mini-Chat-G3', email, resetLink)
                 return res.status(201).json({
                     message: `Reset password link has been sent to ${email}`
                 })

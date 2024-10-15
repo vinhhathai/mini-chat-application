@@ -18,7 +18,7 @@ async function sendResetPasswordEmail(nameHostEmail, receivedEmail, resetLink) {
     await transporter.sendMail({
         from: `"${nameHostEmail}" <${hostMail}>`,
         to: receivedEmail,
-        subject: 'Reset Password From Facetok',
+        subject: 'Reset Password From Mini Chat - Group 3',
         html: `
             Hi there ${receivedEmail},
             <br><br>
