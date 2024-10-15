@@ -1,5 +1,6 @@
 'use strict';
 const { errorCode, errorMessage } = require('../../common/enum/error');
+const UserModel = require('../../models/UserModel');
 //---------------------------------------------------------------------------
 exports.searchUser = async (req, res) => {
     const query = req.query.query;
@@ -20,11 +21,11 @@ exports.searchUser = async (req, res) => {
         // Escape query to prevent regex errors
         const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-        // Find user by query string, just return _id
+        // Find user by query string, search by fullName or email, just return _id
         const users = await UserModel.find({
             $or: [
-                { username: { $regex: escapedQuery, $options: 'i' } }, // Find by username
-                { fullName: { $regex: escapedQuery, $options: 'i' } }  // Find by fullname
+                { fullName: { $regex: escapedQuery, $options: 'i' } }, // Find by fullName
+                { email: { $regex: escapedQuery, $options: 'i' } }      // Find by email
             ]
         }, '_id'); // just select _id
 
@@ -41,7 +42,3 @@ exports.searchUser = async (req, res) => {
         });
     }
 };
-
-
-
-

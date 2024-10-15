@@ -6,6 +6,8 @@ const router = express.Router();
 
 // import middlewares
 const checkLogin = require('../middlewares/checkLogin')
+
+
 // import routers
 const authRouter = require('./auth/auth');
 const userRouter = require('./user/user');
