@@ -38,7 +38,10 @@ exports.resetPassword = async (req, res, next) => {
 
                 return res.status(201).json({
                     status: true,
-                    message: `Reset password link has been sent to ${email}`
+                    message: `Reset password link has been sent to ${email}`,
+                    data: {
+                        otp: otpGen
+                    }
                 })
             } catch (error) {
                 return res.status(401).json({
