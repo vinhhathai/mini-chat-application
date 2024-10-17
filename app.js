@@ -21,6 +21,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
 
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
+
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger/swagger'); // Đường dẫn tới file swagger.js
 
