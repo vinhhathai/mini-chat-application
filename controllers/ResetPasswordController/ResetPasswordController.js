@@ -3,75 +3,101 @@
 const bcrypt = require('bcrypt')
 const UserModel = require("../../models/UserModel");
 const emailValidation = require("../../validation/emailValidation");
+const restorePasswordValidation = require("../../validation/restorePasswordValidation");
 const jwt = require('jsonwebtoken');
 const changePasswordValidation = require("../../validation/changePasswordValidation");
 const { errorMessage, errorCode } = require('../../common/enum/error');
 require('dotenv').config()
 const sendResetPasswordEmail = require('../../utils/sendResetPasswordEmail')
+const { generateOtp } = require('../../utils/string')
 
 // Send a reset password email
 exports.resetPassword = async (req, res, next) => {
-    // Validation
     try {
         const { error } = await emailValidation.validate(req.body)
         if (error) {
             return res.status(400).json({
-                timestamp: new Date().toISOString(),
-                path: "/auth/reset-password",
-                code: errorCode.VALIDATION_FAILED,
-                error: {
-                    name: error.message,
-                }
+                status: false,
+                message: ""
             });
         }
-
         // Get email for sending
         const { email } = req.body;
         const user = await UserModel.findOne({ email: email });
-        // Create token
         if (user) {
-            const resetPasswordToken = jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: '10m' }) // 2 minutes
-            // Setup link for reset password
-            const host = "localhost:3000"
-            const protocol = req.protocol
-            const resetLink = `${protocol}://${host}/auth/reset-password?reset_password_token=${resetPasswordToken}&email=${email}`
 
-            // Send email
+            const otpGen = generateOtp();
+            console.log("Generated OTP:", otpGen);
+            const generateOtpResult = await UserModel.updateOne(
+                { email: email },
+                { resetOtp: otpGen }
+            );
             try {
-                sendResetPasswordEmail('Mini-Chat-G3', email, resetLink)
+
+                sendResetPasswordEmail('Mini-Chat-G3', email, otpGen)
+
                 return res.status(201).json({
-                    message: `Reset password link has been sent to ${email}`
+                    status: true,
+                    message: `Reset password link has been sent to ${email}`,
+                    data: {
+                        otp: otpGen
+                    }
                 })
             } catch (error) {
                 return res.status(401).json({
-                    timestamp: new Date().toISOString(),
-                    path: "/auth/reset-password",
-                    code: errorCode.EMAIL_SERVICE_UNAUTHORIZED,
-                    error: {
-                        name: errorMessage.EMAIL_SERVICE_UNAUTHORIZED,
-                    }
+                    status: false,
+                    message: "cant send reset password",
+                    error
                 });
-
             }
-
         }
-
-        return res.status(404).json({
-            timestamp: new Date().toISOString(),
-            path: "/auth/reset-password",
-            code: errorCode.EMAIL_NOT_FOUND,
-            error: {
-                name: errorMessage.EMAIL_NOT_FOUND,
-            }
-        });
     } catch (error) {
+        console.log(error);
         return res.status(500).json({
-            timestamp: new Date().toISOString(),
-            path: "/auth/reset-password",
-            code: errorCode.ERR_GET_RESET_PASSWORD_LINK_FAILED,
-            error: {
-                name: errorMessage.ERR_GET_RESET_PASSWORD_LINK_FAILED,
-            }
+            status: false,
+            message: "Error server",
+            error
+        });
+    }
+}
+
+
+exports.restorePassword = async (req, res, next) => {
+    try {
+        const { error } = await restorePasswordValidation.validate(req.body)
+        if (error) {
+            return res.status(400).json({
+                status: false,
+                message: "Invalid input data",
+                error: error.details[0].message
+            });
+        }
+        const { email, password, otp } = req.body;
+        const user = await UserModel.findOne({ email: email, resetOtp: otp });
+        if (user) {
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(password, salt);
+            user.password = hashedPassword;
+            user.resetOtp = null;
+
+            await user.save();
+            return res.status(200).json({
+                status: true,
+                message: "Password updated successfully"
+            });
+
+        } else {
+            return res.status(400).json({
+                status: false,
+                message: "Not found email or OTP"
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            status: false,
+            message: "Error server",
+            error
         });
     }
 }

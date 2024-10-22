@@ -34,7 +34,6 @@ const checkLogin = async (req, res, next) => {
             });
         }
 
-
         // Add user_id to req.user
         req.user = {
             user_id: token._id
