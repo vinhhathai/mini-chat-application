@@ -4,6 +4,8 @@ require('dotenv').config()
 const UserModel = require('../models/UserModel')
 const jwt = require('jsonwebtoken');
 const { errorCode, errorMessage } = require('../common/enum/error');
+const socketHandler = require('../socket/socket')
+
 
 const checkLogin = async (req, res, next) => {
     try {
@@ -38,6 +40,9 @@ const checkLogin = async (req, res, next) => {
         req.user = {
             user_id: token._id
         };
+        
+
+        
         // Proceed to next middleware
         next();
 
