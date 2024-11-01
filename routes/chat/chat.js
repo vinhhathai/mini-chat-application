@@ -7,10 +7,20 @@ const GetListChatRoomController = require('../../controllers/GetListChatRoomCont
 const JoinRoomController = require('../../controllers/JoinRoomController/JoinRoomController');
 // var ChatRoomController = require('../../controllers/ChatController/ChatRoomController')
 
+//middleware
+const { upload, handleMulterError } = require('../../middlewares/uploadFile');
 
+
+
+
+// POST join chat room
+router.delete('/delete-room/', JoinRoomController.joinRoom)
+
+// POST join chat room
+router.post('/join-room/', JoinRoomController.joinRoom)
 
 //POST Create chat room
-router.post('/create-room', CreateChatRoomController.createNewChatRoom)
+router.post('/create-room',upload.single('image'), handleMulterError,CreateChatRoomController.createNewChatRoom)
 
 //GET Get list of chat rooms
 router.get('/room', GetListChatRoomController.getRoomsByOwnerOrMember)

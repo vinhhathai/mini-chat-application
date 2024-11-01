@@ -5,7 +5,7 @@
  *     summary: Get a specific chat room by ID
  *     description: Retrieve detailed information about a chat room by its ID, including members and owner information.
  *     tags:
- *       - Room
+ *       - Chat
  *     security:
  *       - BearerAuth: []
  *     parameters:
