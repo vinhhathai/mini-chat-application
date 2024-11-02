@@ -11,7 +11,8 @@ const JoinRoomController = require('../../controllers/JoinRoomController/JoinRoo
 const { upload, handleMulterError } = require('../../middlewares/uploadFile');
 
 
-
+//GET room  by id
+router.get('/room/detail/:id', GetListChatRoomController.getChatRoomById)
 
 // POST join chat room
 router.delete('/delete-room/', JoinRoomController.joinRoom)
@@ -22,11 +23,10 @@ router.post('/join-room/', JoinRoomController.joinRoom)
 //POST Create chat room
 router.post('/create-room',upload.single('image'), handleMulterError,CreateChatRoomController.createNewChatRoom)
 
+
 //GET Get list of chat rooms
 router.get('/room', GetListChatRoomController.getRoomsByOwnerOrMember)
 
-//GET room  by id
-router.get('/room/:id', GetListChatRoomController.getChatRoomById)
 
 
 
