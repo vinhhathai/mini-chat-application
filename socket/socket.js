@@ -1,3 +1,5 @@
+// services/socket.js
+
 const User = require('../models/UserModel');
 const Room = require('../models/RoomModel');
 const Message = require('../models/MessageModel');
@@ -18,10 +20,22 @@ module.exports = (io) => {
         });
 
         socket.on('chatMessage', async ({ roomId, message }) => {
-            console.log(message)
             console.log(`Received message from room ${roomId}:`, message);
-            const newMessage = new Message(message);
+            
+            // Tạo tin nhắn mới với roomId
+            const newMessage = new Message({
+                ...message,
+                roomId: roomId
+            });
+            
             await newMessage.save();
+
+            // Thêm ID của tin nhắn vào phòng tương ứng
+            await Room.findByIdAndUpdate(roomId, {
+                $push: { messages: newMessage._id }
+            });
+
+            // Phát tin nhắn mới cho tất cả thành viên trong phòng
             io.to(roomId).emit('message', newMessage);
         });
 
@@ -36,4 +50,3 @@ module.exports = (io) => {
         });
     });
 };
-
