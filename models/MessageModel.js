@@ -1,25 +1,16 @@
+// models/MessageModel.js
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const { Schema } = mongoose;
 
-const MessageModel = new Schema({
-    sender: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'users',
-        required: true
-    },
-    chatroom: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'rooms',
-        required: true
-    },
-    content: {
-        type: String,
-        required: true
-    },
-
+const MessageSchema = new Schema({
+    senderId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    roomId: { type: mongoose.Schema.Types.ObjectId, ref: 'Room', required: true }, // Thêm trường roomId
+    content: { type: String, required: true }
 }, {
     timestamps: true,
-    collection: 'messages',
+    collection: 'messages'
 });
 
-module.exports = mongoose.model('messages', MessageModel);
+const MessageModel = mongoose.model('Message', MessageSchema);
+
+module.exports = MessageModel;

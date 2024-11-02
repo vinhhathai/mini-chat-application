@@ -5,6 +5,7 @@ const UserModel = require("../../models/UserModel")
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { errorCode, errorMessage } = require('../../common/enum/error')
+const socketHandler = require('../../socket/socket')
 require('dotenv').config()
 
 exports.loginToSystem = async (req, res) => {
@@ -60,10 +61,14 @@ exports.loginToSystem = async (req, res) => {
 
         // If everything is okay, return success message
         emailExist.password = undefined
+        
+
+
         return res.status(200).json({
             message: 'Login successfully',
             accessToken: accessToken,
-            refreshToken: refreshToken
+            refreshToken: refreshToken,
+            userId: emailExist._id, // Trả về userId
         });
     } catch (error) {
         return res.status(500).json({
