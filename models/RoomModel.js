@@ -5,7 +5,7 @@ const RoomSchema = new Schema({
     name: { type: String, required: true },
     members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],  // Ref tên Model
     messages: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Message' }],  // Ref tên Model
-    owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', unique: true },
+    owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     private: { type: Boolean, default: false },
     image: { type: String }, 
 }, {

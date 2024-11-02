@@ -67,7 +67,8 @@ exports.loginToSystem = async (req, res) => {
         return res.status(200).json({
             message: 'Login successfully',
             accessToken: accessToken,
-            refreshToken: refreshToken
+            refreshToken: refreshToken,
+            userId: emailExist._id, // Trả về userId
         });
     } catch (error) {
         return res.status(500).json({

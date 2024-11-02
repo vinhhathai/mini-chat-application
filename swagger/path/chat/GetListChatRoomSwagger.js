@@ -5,7 +5,7 @@
  *     summary: Get rooms where the user is owner or member
  *     description: Retrieve a list of chat rooms where the user is either the owner or a member.
  *     tags:
- *       - Room
+ *       - Chat
  *     security:
  *       - BearerAuth: []
  *     responses:

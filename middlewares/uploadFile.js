@@ -8,7 +8,7 @@ const { errorCode, errorMessage } = require('../common/enum/error')
 // Config storage path and file name
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, '../public/upload'));
+        cb(null, path.join(__dirname, '../public/upload/roomImage'));
     },
     filename: function (req, file, cb) {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
@@ -18,7 +18,7 @@ const storage = multer.diskStorage({
 
 // Filter to check file type
 const fileFilter = (req, file, cb) => {
-    const fileTypes = /jpeg|jpg|png|mp4|wmv|mkv/;
+    const fileTypes = /jpeg|jpg|png|/;
     const extname = fileTypes.test(path.extname(file.originalname).toLowerCase());
     const mimetype = fileTypes.test(file.mimetype);
 

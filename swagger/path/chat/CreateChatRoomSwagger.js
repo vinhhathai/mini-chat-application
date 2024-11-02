@@ -3,15 +3,15 @@
  * /chat/create-room:
  *   post:
  *     summary: Create a new chat room
- *     description: Allows a user to create a new chat room. The user creating the room will automatically be added as a member and the owner of the room.
+ *     description: Allows a user to create a new chat room. The user creating the room will automatically be added as a member and the owner of the room. Optionally, an avatar image can be uploaded for the chat room.
  *     tags:
- *       - Room
+ *       - Chat
  *     security:
  *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -19,6 +19,10 @@
  *                 type: string
  *                 description: The name of the new chat room.
  *                 example: "General Chat"
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: An optional avatar image for the chat room.
  *     responses:
  *       201:
  *         description: Room created successfully
@@ -51,6 +55,10 @@
  *                       type: string
  *                       description: The unique ID of the user who created the room.
  *                       example: "5f8d0d55b54764421b7156c3"
+ *                     image:
+ *                       type: string
+ *                       description: The path to the avatar image of the room.
+ *                       example: "/upload/roomAvatar123.png"
  *       400:
  *         description: Invalid request, missing or invalid data.
  *         content:
