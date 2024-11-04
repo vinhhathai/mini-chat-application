@@ -35,12 +35,13 @@ exports.getChatRoomById = async (req, res, next) => {
       .populate({
         path: "messages",
         select: "senderId content createdAt",
-        populate: { path: "senderId", select: "fullName" },
+        populate: { path: "senderId", select: "fullName profilePicture" },
         options: { sort: { createdAt: 1 } },
       })
       .populate({
         path: "owner",
-        select: "fullName", // Chỉ lấy trường fullName từ bảng User
+        select: "fullName",
+        // Chỉ lấy trường fullName từ bảng User
       });
 
     if (!room) {

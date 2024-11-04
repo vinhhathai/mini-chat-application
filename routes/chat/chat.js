@@ -7,6 +7,7 @@ const GetListChatRoomController = require('../../controllers/GetListChatRoomCont
 const JoinRoomController = require('../../controllers/JoinRoomController/JoinRoomController');
 // var ChatRoomController = require('../../controllers/ChatController/ChatRoomController')
 const LeaveChatRoomController = require('../../controllers/LeaveChatRoomController/LeaveChatRoomController');
+const SearchRoomController = require('../../controllers/SearchRoomController/SearchRoomController');
 
 
 //middleware
@@ -29,6 +30,8 @@ router.delete('/room/leave/', LeaveChatRoomController.leaveRoom)
 
 //GET room  by id
 router.get('/room/detail/:id', GetListChatRoomController.getChatRoomById)
+/* GET SEARCHING USER */
+router.get('/search-room', SearchRoomController.searchRoom);
 
 //GET Get list of chat rooms
 router.get('/room', GetListChatRoomController.getRoomsByOwnerOrMember)
