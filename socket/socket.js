@@ -11,12 +11,17 @@ module.exports = (io) => {
         console.log('A user connected:', socket.id);
 
         socket.on('joinRoom', async ({ roomId, userId }) => {
-            console.log(`User ${userId} joining room ${roomId}`);
-            socket.join(roomId);
-            usersOnline[userId] = socket.id;
-            await User.findByIdAndUpdate(userId, { isActive: true });
-            io.to(roomId).emit('userOnline', { userId, status: 'online' });
+            try {
+                console.log(`User ${userId} joining room ${roomId}`);
+                socket.join(roomId);
+                usersOnline[userId] = socket.id;
+                await User.findByIdAndUpdate(userId, { isActive: true });
+                io.to(roomId).emit('userOnline', { userId, status: 'online' });
+            } catch (error) {
+                console.error(`Error in joinRoom event: ${error.message}`);
+            }
         });
+
 
         socket.on('chatMessage', async ({ roomId, message }
         ) => {
@@ -33,12 +38,14 @@ module.exports = (io) => {
 
 
 
+
                 await newMessage.save();
 
                 // Thêm ID của tin nhắn vào phòng tương ứng
                 await Room.findByIdAndUpdate(roomId, {
                     $push: { messages: newMessage._id }
                 });
+
 
 
                 // Phát tin nhắn mới cho tất cả thành viên trong phòng
@@ -48,19 +55,25 @@ module.exports = (io) => {
                     avatar: message.avatar
                 });
             } catch (error) {
+
                 console.log('====================================');
                 console.log(error);
                 console.log('====================================');
+
             }
         });
 
         socket.on('disconnect', async () => {
-            console.log('User disconnected:', socket.id);
-            let userId = Object.keys(usersOnline).find(key => usersOnline[key] === socket.id);
-            if (userId) {
-                await User.findByIdAndUpdate(userId, { isActive: false });
-                delete usersOnline[userId];
-                io.emit('userOffline', { userId });
+            try {
+                console.log('User disconnected:', socket.id);
+                let userId = Object.keys(usersOnline).find(key => usersOnline[key] === socket.id);
+                if (userId) {
+                    await User.findByIdAndUpdate(userId, { isActive: false });
+                    delete usersOnline[userId];
+                    io.emit('userOffline', { userId });
+                }
+            } catch (error) {
+                console.error(`Error in disconnect event: ${error.message}`);
             }
         });
     });

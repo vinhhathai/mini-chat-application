@@ -1,8 +1,11 @@
+// profileValidation.js
+const Joi = require('joi').extend(require('@joi/date'));
 
-const Joi = require('joi').extend(require('@joi/date'));;
 const profileValidation = Joi.object({
-  email: Joi.string().email().required(),
-  fullname: Joi.string().required(),
+  fullName: Joi.string().required(),
+  oldPassword: Joi.string().required(),
+  newPassword: Joi.string().required(),
+  confirmPassword: Joi.string().valid(Joi.ref('newPassword')).required(),
 });
 
-module.exports = profileValidation;
+module.exports = { profileValidation };

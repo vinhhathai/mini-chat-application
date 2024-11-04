@@ -10,7 +10,7 @@ exports.searchRoom = async (req, res) => {
     if (!query || typeof query !== 'string' || query.trim() === '') {
         return res.status(400).json({
             timestamp: new Date().toISOString(),
-            path: "/room/search-room",
+            path: "/search-room",
             code: errorCode.VALIDATION_FAILED,
             error: {
                 name: errorMessage.ERR_INVALID_QUERY
@@ -32,7 +32,7 @@ exports.searchRoom = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             timestamp: new Date().toISOString(),
-            path: "/room/search-room",
+            path: "/search-room",
             code: errorCode.ERR_GET_DATA_FAILED,
             error: {
                 name: error.message,
