@@ -58,7 +58,7 @@ console.log(name)
 // Cập nhật avatar phòng
 exports.updateRoomAvatar = async (req, res) => {
     const { id } = req.params;
-    const avatarPath = req.file ? `/upload/roomImage/${req.file.filename}` : null;
+    const avatarPath = req.file ? `/upload/roomImage/${req.file.filename}` : '/upload/roomImage/vinh0982.jpg';
     const {user_id} = req.user;
 
     try {
