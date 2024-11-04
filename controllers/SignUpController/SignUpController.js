@@ -41,10 +41,11 @@ exports.signUp = async (req, res) => {
         // Hash password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(req.body.password, salt);
-
+        const profilePicture = '/upload/profile/profileDefault.jpg'; 
         // Insert account into database
         const newUser = await UserModel.create({
             ...req.body,
+            profilePicture,
             password: hashedPassword,
         })
 

@@ -14,29 +14,44 @@ module.exports = (io) => {
             console.log(`User ${userId} joining room ${roomId}`);
             socket.join(roomId);
             usersOnline[userId] = socket.id;
-
             await User.findByIdAndUpdate(userId, { isActive: true });
             io.to(roomId).emit('userOnline', { userId, status: 'online' });
         });
 
-        socket.on('chatMessage', async ({ roomId, message }) => {
-            console.log(`Received message from room ${roomId}:`, message);
-            
-            // Tạo tin nhắn mới với roomId
-            const newMessage = new Message({
-                ...message,
-                roomId: roomId
-            });
-            
-            await newMessage.save();
+        socket.on('chatMessage', async ({ roomId, message }
+        ) => {
+            try {
+                console.log(`Received message from room ${roomId}:`, message);
 
-            // Thêm ID của tin nhắn vào phòng tương ứng
-            await Room.findByIdAndUpdate(roomId, {
-                $push: { messages: newMessage._id }
-            });
+                // Tạo tin nhắn mới với roomId
 
-            // Phát tin nhắn mới cho tất cả thành viên trong phòng
-            io.to(roomId).emit('message', newMessage);
+
+                const newMessage = new Message({
+                    ...message,
+                    roomId: roomId,
+                });
+
+
+
+                await newMessage.save();
+
+                // Thêm ID của tin nhắn vào phòng tương ứng
+                await Room.findByIdAndUpdate(roomId, {
+                    $push: { messages: newMessage._id }
+                });
+
+
+                // Phát tin nhắn mới cho tất cả thành viên trong phòng
+                io.to(roomId).emit('message', {
+                    newMessage: newMessage,
+                    senderName: message.senderName,
+                    avatar: message.avatar
+                });
+            } catch (error) {
+                console.log('====================================');
+                console.log(error);
+                console.log('====================================');
+            }
         });
 
         socket.on('disconnect', async () => {
