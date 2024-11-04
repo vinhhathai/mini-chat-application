@@ -20,8 +20,8 @@ exports.getFriends = async (req, res) => {
     }
 
     try {
-        // Find User by id
-        const user = await UserModel.findById(user_id).select('friends');
+        // Find User by id and populate friends with additional fields
+        const user = await UserModel.findById(user_id).select('friends').populate('friends', 'fullName email profilePicture');
         if (!user) {
             return res.status(404).json({
                 timestamp: new Date().toISOString(),
@@ -33,8 +33,16 @@ exports.getFriends = async (req, res) => {
             });
         }
 
+        // Map the populated friends data to include only necessary fields
+        const friendsData = user.friends.map(friend => ({
+            _id: friend._id,
+            fullName: friend.fullName,
+            email: friend.email,
+            profilePicture: friend.profilePicture
+        }));
+
         return res.status(200).json({
-            data: user.friends
+            data: friendsData
         });
     } catch (error) {
         return res.status(500).json({
