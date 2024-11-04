@@ -28,15 +28,20 @@ exports.getRoomsByOwnerOrMember = async (req, res, next) => {
 
 // API: Lấy thông tin phòng chat theo ID
 exports.getChatRoomById = async (req, res, next) => {
-  const { id } = req.params; 
+  const { id } = req.params;
 
   try {
-    const room = await Room.findById(id).populate({
-      path: "messages",
-      select: "senderId content createdAt",
-      populate: { path: "senderId", select: "fullName" },
-      options: { sort: { createdAt: 1 } },
-    });
+    const room = await Room.findById(id)
+      .populate({
+        path: "messages",
+        select: "senderId content createdAt",
+        populate: { path: "senderId", select: "fullName" },
+        options: { sort: { createdAt: 1 } },
+      })
+      .populate({
+        path: "owner",
+        select: "fullName", // Chỉ lấy trường fullName từ bảng User
+      });
 
     if (!room) {
       return res.status(404).json({ message: "Room not found" });
