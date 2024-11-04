@@ -28,7 +28,7 @@ exports.getRoomsByOwnerOrMember = async (req, res, next) => {
 
 // API: Lấy thông tin phòng chat theo ID
 exports.getChatRoomById = async (req, res, next) => {
-  const { id } = req.params; // Thay đổi ở đây
+  const { id } = req.params; 
 
   try {
     const room = await Room.findById(id).populate({
