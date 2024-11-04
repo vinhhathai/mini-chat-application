@@ -2,8 +2,8 @@
  * @swagger
  * /chat/room/avatar/{id}:
  *   put:
- *     summary: Update the avatar of a specific chat room
- *     description: Update the avatar image of a chat room by its ID. Only the room owner can perform this action.
+ *     summary: Update the room's avatar
+ *     description: Upload a new avatar for a specified room.
  *     tags:
  *       - Chat
  *     security:
@@ -12,16 +12,20 @@
  *       - in: path
  *         name: id
  *         required: true
- *         description: The unique ID of the chat room to update.
  *         schema:
  *           type: string
- *           example: "5f8d0d55b54764421b7156c9"
- *       - in: formData
- *         name: avatar
- *         description: The new avatar image file for the chat room.
- *         required: true
- *         schema:
- *           type: file
+ *         description: The ID of the room to update the avatar for.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: The new avatar file to upload for the room.
  *     responses:
  *       200:
  *         description: Room avatar updated successfully.
@@ -39,16 +43,14 @@
  *                 data:
  *                   type: object
  *                   properties:
- *                     _id:
+ *                     image:
  *                       type: string
- *                       description: The unique ID of the room.
- *                       example: "5f8d0d55b54764421b7156c9"
- *                     avatar:
+ *                       example: "/upload/roomImage/example.jpg"
+ *                     other_properties:
  *                       type: string
- *                       description: The URL of the new avatar image.
- *                       example: "/upload/roomImage/newAvatar.jpg"
+ *                       example: "..."
  *       403:
- *         description: User is not the owner of the room.
+ *         description: User does not have permission to update the room's avatar.
  *         content:
  *           application/json:
  *             schema:
@@ -73,8 +75,31 @@
  *                 message:
  *                   type: string
  *                   example: "Phòng không tồn tại"
+ *       413:
+ *         description: File size exceeds the limit.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 timestamp:
+ *                   type: string
+ *                   format: date-time
+ *                   example: "2023-11-05T10:15:30Z"
+ *                 path:
+ *                   type: string
+ *                   example: "/room/avatar/123"
+ *                 code:
+ *                   type: string
+ *                   example: "FILE_EXCEEDED_SIZE"
+ *                 error:
+ *                   type: object
+ *                   properties:
+ *                     name:
+ *                       type: string
+ *                       example: "File is exceeded (>=50MB)"
  *       500:
- *         description: Server error while updating the room avatar.
+ *         description: Internal server error.
  *         content:
  *           application/json:
  *             schema:
@@ -88,5 +113,5 @@
  *                   example: "Lỗi nội bộ"
  *                 error:
  *                   type: string
- *                   example: "Error details"
+ *                   example: "Internal Server Error"
  */
