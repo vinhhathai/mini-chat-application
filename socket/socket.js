@@ -22,15 +22,22 @@ module.exports = (io) => {
             }
         });
 
-        socket.on('chatMessage', async ({ roomId, message }) => {
+
+        socket.on('chatMessage', async ({ roomId, message }
+        ) => {
             try {
                 console.log(`Received message from room ${roomId}:`, message);
 
                 // Tạo tin nhắn mới với roomId
+
+
                 const newMessage = new Message({
                     ...message,
                     roomId: roomId,
                 });
+
+
+
 
                 await newMessage.save();
 
@@ -39,6 +46,8 @@ module.exports = (io) => {
                     $push: { messages: newMessage._id }
                 });
 
+
+
                 // Phát tin nhắn mới cho tất cả thành viên trong phòng
                 io.to(roomId).emit('message', {
                     newMessage: newMessage,
@@ -46,7 +55,11 @@ module.exports = (io) => {
                     avatar: message.avatar
                 });
             } catch (error) {
-                console.error(`Error in chatMessage event: ${error.message}`);
+
+                console.log('====================================');
+                console.log(error);
+                console.log('====================================');
+
             }
         });
 
