@@ -8,6 +8,7 @@ exports.createNewChatRoom = async (req, res, next) => {
         const { user_id } = req.user;
         const avatarPath = req.file ? `/upload/roomImage/${req.file.filename}` : '/upload/roomImage/vinh0982.jpg'; // Get avatar file path if uploaded
 
+        console.log(avatarPath)
         // Tạo phòng mới
         const newRoom = new Room({
             name: room_name,
