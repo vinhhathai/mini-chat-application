@@ -12,12 +12,12 @@ exports.joinRoom = async (req, res, next) => {
         // Tìm phòng chat theo roomId
         let room = await Room.findById(roomId);
         if (!room) {
-            return res.status(404).json({ message: 'Room not found' });
+            return res.status(404).json({ message: 'Không tìm thấy phòng' });
         }
 
         // Kiểm tra nếu người dùng đã tham gia phòng
         if (room.members.includes(user_id)) {
-            return res.status(400).json({ message: 'You have already joined this room' });
+            return res.status(400).json({ message: 'Bạn đã tham gia phòng này rồi' });
         }
 
         // Thêm người dùng vào danh sách members của phòng
@@ -31,7 +31,7 @@ exports.joinRoom = async (req, res, next) => {
 
         res.status(200).json({ message: 'Joined room successfully', room });
     } catch (error) {
-        res.status(500).json({ message: 'Server error', error });
+        res.status(500).json({ message: 'Có lỗi xảy ra, không tìm được phòng', error });
     }
 
 };

@@ -6,13 +6,13 @@ const CreateChatRoomController = require('../../controllers/CreateChatRoomContro
 const GetListChatRoomController = require('../../controllers/GetListChatRoomController/GetListChatRoomController');
 const JoinRoomController = require('../../controllers/JoinRoomController/JoinRoomController');
 // var ChatRoomController = require('../../controllers/ChatController/ChatRoomController')
+const LeaveChatRoomController = require('../../controllers/LeaveChatRoomController/LeaveChatRoomController');
+
 
 //middleware
 const { upload, handleMulterError } = require('../../middlewares/uploadFile');
 
 
-//GET room  by id
-router.get('/room/detail/:id', GetListChatRoomController.getChatRoomById)
 
 // POST join chat room
 router.delete('/delete-room/', JoinRoomController.joinRoom)
@@ -24,10 +24,14 @@ router.post('/join-room/', JoinRoomController.joinRoom)
 router.post('/create-room',upload.single('image'), handleMulterError,CreateChatRoomController.createNewChatRoom)
 
 
+// Delete leave chat room
+router.delete('/room/leave/', LeaveChatRoomController.leaveRoom)
+
+//GET room  by id
+router.get('/room/detail/:id', GetListChatRoomController.getChatRoomById)
+
 //GET Get list of chat rooms
 router.get('/room', GetListChatRoomController.getRoomsByOwnerOrMember)
-
-
 
 
 
