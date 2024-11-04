@@ -69,6 +69,11 @@ exports.loginToSystem = async (req, res) => {
             accessToken: accessToken,
             refreshToken: refreshToken,
             userId: emailExist._id, // Trả về userId
+            profilePicture: `${emailExist.profilePicture}`,
+            friends: emailExist.friends,
+            fullName: emailExist.fullName
+
+
         });
     } catch (error) {
         return res.status(500).json({

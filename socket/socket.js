@@ -20,15 +20,19 @@ module.exports = (io) => {
 
         socket.on('chatMessage', async ({ roomId, message }
 
-            
+
         ) => {
             console.log(`Received message from room ${roomId}:`, message);
             
             // Tạo tin nhắn mới với roomId
+           
+            
             const newMessage = new Message({
                 ...message,
-                roomId: roomId
+                roomId: roomId,
             });
+           
+            
             
             await newMessage.save();
 
@@ -38,7 +42,11 @@ module.exports = (io) => {
             });
 
             // Phát tin nhắn mới cho tất cả thành viên trong phòng
-            io.to(roomId).emit('message', newMessage);
+            io.to(roomId).emit('message',{
+                newMessage: newMessage,
+                senderName: message.senderName,
+                avatar: message.avatar
+            });
         });
 
         socket.on('disconnect', async () => {

@@ -7,6 +7,11 @@ const RemoveFriendController = require('../../controllers/ManageFriendController
 const AddFriendController = require('../../controllers/ManageFriendController/AddFriendController')
 const GetListOfFriendController = require('../../controllers/ManageFriendController/GetListOfFriendController')
 const ProfileController = require('../../controllers/Profile/ProfileController')
+
+//middleware
+const { upload, handleMulterError } = require('../../middlewares/uploadFile');
+
+
 /* GET LIST OF FRIENDS */
 router.get('/friends', GetListOfFriendController.getFriends);
 
@@ -21,6 +26,10 @@ router.get('/search-people', SearchUserController.searchUser);
 
 //update profile
 router.put('/update-profile', ProfileController.updateProfile);
+
+//update profilePicture
+router.put('/profile/picture',upload.single('image'), handleMulterError ,ProfileController.updateProfilePicture);
+
 
 
 

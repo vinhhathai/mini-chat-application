@@ -45,3 +45,39 @@ exports.updateProfile = async (req, res) => {
     });
   }
 }
+
+
+exports.updateProfilePicture = async (req, res) => {
+  try {
+    const avatarPath = req.file ? `/upload/profile/${req.file.filename}` : '/upload/profile/profileDefault.jpg'; 
+    const { user_id } = req.user;
+    const updatedUser = await UserModel.findOne({ _id: user_id });
+    console.log(avatarPath)
+    console.log(user_id)
+    console.log(updatedUser)
+
+
+    if (updatedUser) {
+      if (avatarPath) {
+        updatedUser.profilePicture = avatarPath;
+      }
+      await updatedUser.save();
+      return res.status(200).json({
+        status: true,
+        message: "Profile picture updated successfully",
+      });
+    } else {
+      return res.status(404).json({
+        status: false,
+        message: "User not found",
+      });
+    }
+  } catch (error) {
+    console.error("Error updating profile picture:", error);
+    return res.status(500).json({
+      status: false,
+      message: "Internal server error",
+      error,
+    });
+  }
+};
