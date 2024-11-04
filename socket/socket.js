@@ -14,12 +14,14 @@ module.exports = (io) => {
             console.log(`User ${userId} joining room ${roomId}`);
             socket.join(roomId);
             usersOnline[userId] = socket.id;
-
             await User.findByIdAndUpdate(userId, { isActive: true });
             io.to(roomId).emit('userOnline', { userId, status: 'online' });
         });
 
-        socket.on('chatMessage', async ({ roomId, message }) => {
+        socket.on('chatMessage', async ({ roomId, message }
+
+            
+        ) => {
             console.log(`Received message from room ${roomId}:`, message);
             
             // Tạo tin nhắn mới với roomId
