@@ -1,37 +1,50 @@
 /**
  * @swagger
- * /user/add-friend:
- *   post:
- *     summary: Gửi yêu cầu kết bạn
- *     description: Người dùng gửi yêu cầu kết bạn tới một người dùng khác. Nếu yêu cầu đã tồn tại hoặc người nhận không tồn tại, sẽ trả về lỗi.
+ * /user/friends:
+ *   get:
+ *     summary: Lấy danh sách bạn bè của người dùng
+ *     description: Trả về danh sách bạn bè của người dùng hiện tại, bao gồm thông tin `fullName`, `email`, và `profilePicture` của mỗi bạn bè.
  *     tags:
- *       - Friend Requests
+ *       - User
  *     security:
  *       - BearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               friend_id:
- *                 type: string
- *                 description: ID của người dùng muốn gửi yêu cầu kết bạn
- *                 example: "603e1f4a9b1e8a1f4a8b4567"
  *     responses:
- *       201:
- *         description: Yêu cầu kết bạn đã được gửi thành công.
+ *       200:
+ *         description: Lấy danh sách bạn bè thành công.
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 message:
- *                   type: string
- *                   example: Friend request sent successfully
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                         description: ID của bạn bè
+ *                       fullName:
+ *                         type: string
+ *                         description: Tên đầy đủ của bạn bè
+ *                       email:
+ *                         type: string
+ *                         description: Email của bạn bè
+ *                       profilePicture:
+ *                         type: string
+ *                         description: Ảnh đại diện của bạn bè
+ *               example:
+ *                 data:
+ *                   - _id: "5f8d0d55b54764421b7156c9"
+ *                     fullName: "John Doe"
+ *                     email: "johndoe@example.com"
+ *                     profilePicture: "https://example.com/profile-pic.jpg"
+ *                   - _id: "5f8d0d55b54764421b7156d2"
+ *                     fullName: "Jane Smith"
+ *                     email: "janesmith@example.com"
+ *                     profilePicture: "https://example.com/profile-pic2.jpg"
  *       400:
- *         description: Yêu cầu không hợp lệ hoặc yêu cầu kết bạn đã tồn tại.
+ *         description: Thông tin không hợp lệ.
  *         content:
  *           application/json:
  *             schema:
@@ -42,7 +55,7 @@
  *                   example: "2023-11-05T12:00:00Z"
  *                 path:
  *                   type: string
- *                   example: "/user/add-friend"
+ *                   example: "/user/friends"
  *                 code:
  *                   type: string
  *                   example: "VALIDATION_FAILED"
@@ -51,7 +64,7 @@
  *                   properties:
  *                     name:
  *                       type: string
- *                       example: "FRIEND_REQUEST_ALREADY_SENT"
+ *                       example: "ID_NOT_FOUND"
  *       404:
  *         description: Người dùng không tồn tại.
  *         content:
@@ -64,7 +77,7 @@
  *                   example: "2023-11-05T12:00:00Z"
  *                 path:
  *                   type: string
- *                   example: "/user/add-friend"
+ *                   example: "/user/friends"
  *                 code:
  *                   type: string
  *                   example: "DATA_NOT_FOUND"
@@ -75,7 +88,7 @@
  *                       type: string
  *                       example: "USER_NOT_FOUND"
  *       500:
- *         description: Lỗi máy chủ khi gửi yêu cầu kết bạn.
+ *         description: Lỗi máy chủ khi lấy danh sách bạn bè.
  *         content:
  *           application/json:
  *             schema:
@@ -86,10 +99,10 @@
  *                   example: "2023-11-05T12:00:00Z"
  *                 path:
  *                   type: string
- *                   example: "/user/add-friend"
+ *                   example: "/user/friends"
  *                 code:
  *                   type: string
- *                   example: "ERR_ADD_FRIEND_FAILED"
+ *                   example: "ERR_RETRIEVE_FRIENDS_FAILED"
  *                 error:
  *                   type: object
  *                   properties:
