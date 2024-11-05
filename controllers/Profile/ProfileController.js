@@ -75,7 +75,7 @@ exports.updateProfile = async (req, res) => {
 exports.updateProfilePicture = async (req, res) => {
   try {
     // Kiểm tra file ảnh đã được upload hay không
-    const avatarPath = req.file ? `/upload/profile/${req.file.filename}` : '/upload/profile/profileDefault.jpg'; 
+    const avatarPath = req.file ? `/upload/profile/${req.file.filename}` : '/upload/profile/profileDefault.jpg';
     const { user_id } = req.user;
 
     // Tìm người dùng theo ID
