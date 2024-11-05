@@ -4,7 +4,7 @@ const { errorCode, errorMessage } = require('../../common/enum/error');
 
 //----------------------------------------------------------------
 exports.addFriend = async (req, res) => {
-    const { friend_id } = req.body;
+    const { friend_email } = req.body; // Sử dụng email thay vì id
     const { user_id } = req.user;
 
     // Kiểm tra user_id
@@ -30,7 +30,7 @@ exports.addFriend = async (req, res) => {
         }
 
         // Không thể tự gửi yêu cầu kết bạn cho chính mình
-        if (user_id === friend_id) {
+        if (user.email === friend_email) { // So sánh bằng email
             return res.status(400).json({
                 timestamp: new Date().toISOString(),
                 path: "/user/add-friend",
@@ -39,8 +39,8 @@ exports.addFriend = async (req, res) => {
             });
         }
 
-        // Tìm người bạn (friend)
-        const friend = await UserModel.findById(friend_id);
+        // Tìm người bạn (friend) dựa trên email
+        const friend = await UserModel.findOne({ email: friend_email });
         if (!friend) {
             return res.status(404).json({
                 timestamp: new Date().toISOString(),
@@ -53,7 +53,7 @@ exports.addFriend = async (req, res) => {
         // Kiểm tra xem yêu cầu kết bạn đã tồn tại
         const existingRequest = await FriendRequestModel.findOne({
             requester: user_id,
-            recipient: friend_id
+            recipient: friend._id // Sử dụng ID của người bạn
         });
         if (existingRequest) {
             return res.status(400).json({
@@ -67,13 +67,13 @@ exports.addFriend = async (req, res) => {
         // Tạo yêu cầu kết bạn mới
         const friendRequest = new FriendRequestModel({
             requester: user_id,
-            recipient: friend_id,
+            recipient: friend._id, // Sử dụng ID của người bạn
             status: 'pending'
         });
         await friendRequest.save();
 
         return res.status(201).json({
-            message: 'Friend request sent successfully'
+            message: 'Gửi kết bạn thành công'
         });
     } catch (error) {
         return res.status(500).json({
