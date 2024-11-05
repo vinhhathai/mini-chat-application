@@ -2,6 +2,7 @@
 //----------------------------------------------------------------
 const Room = require("../../models/RoomModel"); // Import model Room
 const Message = require("../../models/MessageModel"); // Import model Message nếu cần xoá messages liên quan
+const UserModel = require("../../models/UserModel"); // Import model User
 
 // API: Xoá phòng chat (chỉ owner mới có quyền xoá)
 exports.deleteChatRoom = async (req, res, next) => {
@@ -25,8 +26,14 @@ exports.deleteChatRoom = async (req, res, next) => {
     // Xoá phòng chat
     await Room.findByIdAndDelete(id);
 
-    // (Tuỳ chọn) Xoá các tin nhắn liên quan đến phòng chat nếu cần thiết
+    // Xoá các tin nhắn liên quan đến phòng chat nếu cần thiết
     await Message.deleteMany({ roomId: id });
+
+    // Xoá ID phòng khỏi danh sách `room` trong `UserModel` của các người dùng liên quan
+    await UserModel.updateMany(
+      { room: id },                  // Tìm tất cả user có ID phòng này trong danh sách `room`
+      { $pull: { room: id } }        // Loại bỏ ID phòng khỏi mảng `room`
+    );
 
     res.status(200).json({ message: "Xoá thành công" });
   } catch (error) {
