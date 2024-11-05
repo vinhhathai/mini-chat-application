@@ -12,7 +12,7 @@ exports.loginToSystem = async (req, res) => {
 
     // Validation
     try {
-        const { error } =  await loginValidation.validate(req.body);
+        const { error } = await loginValidation.validate(req.body);
 
         if (error) {
             return res.status(400).json({
@@ -53,7 +53,7 @@ exports.loginToSystem = async (req, res) => {
             });
         }
 
-        
+
 
         // Create jwt token
         const accessToken = jwt.sign({ _id: emailExist._id }, process.env.ACCESS_TOKEN_SECRET_KEY, { expiresIn: '7d' }) // 7 days
@@ -61,7 +61,7 @@ exports.loginToSystem = async (req, res) => {
 
         // If everything is okay, return success message
         emailExist.password = undefined
-        
+
 
 
         return res.status(200).json({
@@ -71,8 +71,8 @@ exports.loginToSystem = async (req, res) => {
             userId: emailExist._id, // Trả về userId
             profilePicture: `${emailExist.profilePicture}`,
             friends: emailExist.friends,
-            fullName: emailExist.fullName
-
+            fullName: emailExist.fullName,
+            email: emailExist.email
 
         });
     } catch (error) {
