@@ -4,16 +4,16 @@ const UserModel = require("../../models/UserModel");
 const { profileValidation } = require('../../validation/profileValidation');
 const bcrypt = require('bcrypt');
 
-exports.updateProfile = async (req, res) => {
+
+exports.updateFullName = async (req, res) => {
   try {
-    const { fullName, oldPassword, newPassword, confirmPassword } = req.body;
+    const { fullName } = req.body;
 
     // Validate dữ liệu đầu vào
-    const { error } = profileValidation.validate({ fullName, oldPassword, newPassword, confirmPassword });
-    if (error) {
+    if (!fullName) {
       return res.status(400).json({
         status: false,
-        message: error.details[0].message
+        message: "Tên không được để trống"
       });
     }
 
@@ -27,39 +27,13 @@ exports.updateProfile = async (req, res) => {
       });
     }
 
-    // Cập nhật fullName nếu có
-    if (fullName) {
-      updatedUser.fullName = fullName;
-    }
-
-    // Kiểm tra và cập nhật mật khẩu nếu có
-    if (oldPassword && newPassword && confirmPassword) {
-      // So sánh mật khẩu cũ
-      const isMatch = await bcrypt.compare(oldPassword, updatedUser.password);
-      if (!isMatch) {
-        return res.status(400).json({
-          status: false,
-          message: "Mật khẩu cũ không đúng"
-        });
-      }
-
-      // Kiểm tra mật khẩu mới và xác nhận mật khẩu
-      if (newPassword !== confirmPassword) {
-        return res.status(400).json({
-          status: false,
-          message: "Mật khẩu mới và xác nhận mật khẩu không khớp"
-        });
-      }
-
-      // Mã hóa mật khẩu mới
-      const salt = await bcrypt.genSalt(10);
-      updatedUser.password = await bcrypt.hash(newPassword, salt);
-    }
-
+    // Cập nhật fullName
+    updatedUser.fullName = fullName;
     await updatedUser.save();
+
     return res.status(200).json({
       status: true,
-      message: "Cập nhật thông tin thành công"
+      message: "Cập nhật tên thành công"
     });
   } catch (error) {
     console.error("Có lỗi xảy ra", error.message);
@@ -70,6 +44,65 @@ exports.updateProfile = async (req, res) => {
     });
   }
 };
+
+exports.updatePassword = async (req, res) => {
+  try {
+    const { oldPassword, newPassword, confirmPassword } = req.body;
+
+    // Validate dữ liệu đầu vào
+    if (!oldPassword || !newPassword || !confirmPassword) {
+      return res.status(400).json({
+        status: false,
+        message: "Tất cả các trường mật khẩu đều bắt buộc"
+      });
+    }
+
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({
+        status: false,
+        message: "Mật khẩu mới và xác nhận mật khẩu không khớp"
+      });
+    }
+
+    // Tìm người dùng
+    const { user_id } = req.user;
+    const updatedUser = await UserModel.findById(user_id);
+    if (!updatedUser) {
+      return res.status(404).json({
+        status: false,
+        message: "Người dùng không tồn tại"
+      });
+    }
+
+    // So sánh mật khẩu cũ
+    const isMatch = await bcrypt.compare(oldPassword, updatedUser.password);
+    if (!isMatch) {
+      return res.status(400).json({
+        status: false,
+        message: "Mật khẩu cũ không đúng"
+      });
+    }
+
+    // Mã hóa mật khẩu mới
+    const salt = await bcrypt.genSalt(10);
+    updatedUser.password = await bcrypt.hash(newPassword, salt);
+    
+    await updatedUser.save();
+
+    return res.status(200).json({
+      status: true,
+      message: "Cập nhật mật khẩu thành công"
+    });
+  } catch (error) {
+    console.error("Có lỗi xảy ra", error.message);
+    return res.status(500).json({
+      status: false,
+      message: "Có lỗi xảy ra",
+      error
+    });
+  }
+};
+
 
 
 exports.updateProfilePicture = async (req, res) => {
