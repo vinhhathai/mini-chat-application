@@ -27,8 +27,9 @@ exports.updateProfile = async (req, res) => {
       }
       updatedUser.save();
       return res.status(200).json({
-        status: false,
-        message: "Update successful"
+        status: true,
+        message: "Update successful",
+        user: updatedUser
       });
     } else {
       return res.status(404).json({
@@ -49,7 +50,7 @@ exports.updateProfile = async (req, res) => {
 
 exports.updateProfilePicture = async (req, res) => {
   try {
-    const avatarPath = req.file ? `/upload/profile/${req.file.filename}` : '/upload/profile/profileDefault.jpg'; 
+    const avatarPath = req.file ? `/upload/profile/${req.file.filename}` : '/upload/profile/profileDefault.jpg';
     const { user_id } = req.user;
     const updatedUser = await UserModel.findOne({ _id: user_id });
     console.log(avatarPath)
