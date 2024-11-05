@@ -41,8 +41,11 @@ router.post("/add-friend", AddFriendController.addFriend);
 /* GET SEARCHING USER */
 router.get("/search-people", SearchUserController.searchUser);
 
-//update profile
-router.put("/update-profile", ProfileController.updateProfile);
+//update password
+router.put("/update-profile/password", ProfileController.updatePassword);
+
+//update name
+router.put("/update-profile/name", ProfileController.updateFullName);
 
 //update profilePicture
 router.put(
